@@ -15,6 +15,15 @@ M.config = {
 	},
 	-- Enable treesitter integration if available
 	use_treesitter = true,
+	-- Give each character a distinct colour so dialogue is easy to tell apart
+	character_colours = {
+		enabled = true,
+		-- Also colour the dialogue lines, not just the character cue.
+		highlight_dialogue = true,
+		-- Custom colour palette (list of hex strings), cycled through as new
+		-- characters are found. Defaults to character_colours.palette.
+		palette = nil,
+	},
 	-- Export configuration
 	export = {
 		output_dir = nil,
@@ -67,8 +76,9 @@ function M.create_autocommands()
 	vim.api.nvim_create_autocmd("FileType", {
 		pattern = "fountain",
 		group = augroup,
-		callback = function()
+		callback = function(args)
 			require("nvim-fountain.keymaps").setup(M.config)
+			require("nvim-fountain.character_colours").setup(args.buf, M.config.character_colours)
 		end,
 	})
 end
@@ -83,6 +93,10 @@ function M.create_commands()
 	vim.api.nvim_create_user_command("FountainFormat", function()
 		require("nvim-fountain.commands").format_document()
 	end, { desc = "Format the current fountain document" })
+
+	vim.api.nvim_create_user_command("FountainToggleCharacterColours", function()
+		require("nvim-fountain.character_colours").toggle(0, M.config.character_colours)
+	end, { desc = "Toggle per-character dialogue colours" })
 
 	-- Add export commands
 	vim.api.nvim_create_user_command("FountainExportPDF", function(opts)

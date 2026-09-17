@@ -5,6 +5,7 @@ A modern Neovim plugin for the [Fountain](https://fountain.io/) screenplay marku
 ## Features
 
 - Syntax highlighting for Fountain screenplay format
+- Per-character dialogue colours, so it's easy to tell who's speaking
 - Navigation between scene headings
 - Keyboard shortcuts for common screenwriting tasks
 - Screenplay statistics (scene count, character appearances, etc.)
@@ -138,6 +139,18 @@ require("nvim-fountain").setup({
 
   -- Enable treesitter integration if available
   use_treesitter = true,
+
+  -- Give each character a distinct colour so dialogue is easy to tell apart
+  character_colours = {
+    enabled = true,
+
+    -- Also colour the dialogue lines, not just the character cue
+    highlight_dialogue = true,
+
+    -- Custom colour palette (list of hex strings), cycled through as new
+    -- characters are found. Defaults to a built-in palette of 15 colours.
+    -- palette = { "#e6194b", "#3cb44b", "#4363d8" },
+  },
 })
 ```
 
@@ -147,6 +160,7 @@ require("nvim-fountain").setup({
 
 - `:FountainStats` - Display screenplay statistics (scene count, character appearances, etc.)
 - `:FountainFormat` - Format the current fountain document
+- `:FountainToggleCharacterColours` - Toggle per-character dialogue colours on/off
 
 ### Export
 
@@ -169,6 +183,18 @@ The `:FountainStats` command provides useful information about your screenplay:
 - Total line count
 
 This can help track your screenplay's structure and character balance.
+
+## Character Colours
+
+Each character's cue and dialogue lines are automatically highlighted in a
+distinct colour, so it's easy to tell who's speaking at a glance. The colour
+is derived from the character's name, so it stays the same across editing
+sessions, and extensions like `(V.O.)` or `(CONT'D)` are ignored so they
+don't get treated as a different character.
+
+Colours refresh automatically as you edit. Use `:FountainToggleCharacterColours`
+to turn them on or off, or disable the feature entirely via
+`character_colours.enabled = false` in your setup config.
 
 ## Export
 
