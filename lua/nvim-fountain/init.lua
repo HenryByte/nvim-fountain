@@ -89,6 +89,14 @@ function M.create_commands()
 		local output_path = opts.args ~= "" and opts.args or nil
 		require("nvim-fountain.export").export_pdf(output_path)
 	end, { nargs = "?", desc = "Export fountain to PDF" })
+
+	vim.api.nvim_create_user_command("FountainExportPDFDir", function(opts)
+		local base_dir = opts.args ~= "" and opts.args or nil
+		require("nvim-fountain.export").export_pdf_dir(base_dir)
+	end, {
+		nargs = "?",
+		desc = "Export fountain to PDF, mirroring the source's directory structure under base_dir (default: pdf/)",
+	})
 end
 
 -- Navigate to next/previous scene heading

@@ -119,6 +119,10 @@ require("nvim-fountain").setup({
     -- Default export directory (nil means same as source file)
     output_dir = nil,
 
+    -- Base directory for :FountainExportPDFDir, which mirrors the source's
+    -- path (relative to the cwd) underneath this directory
+    pdf_dir = "pdf",
+
     -- PDF export options
     pdf = {
       options = "--overwrite",
@@ -146,7 +150,8 @@ require("nvim-fountain").setup({
 
 ### Export
 
-- `:FountainExportPDF [filename]` - Export to PDF (optional filename)
+- `:FountainExportPDF [filename]` - Export to PDF (optional filename or directory)
+- `:FountainExportPDFDir [base_dir]` - Export to PDF under `base_dir` (default: `pdf/`), mirroring the source file's directory structure relative to the cwd
 
 ## Default Keymaps
 
@@ -175,7 +180,13 @@ npm install -g afterwriting
 
 Once installed, you can use the export commands to convert your Fountain screenplay to PDF:
 
-- PDF: `:FountainExportPDF [optional-filename.pdf]`
+- PDF: `:FountainExportPDF [optional-filename-or-dir.pdf]`
+- PDF, mirroring directory structure: `:FountainExportPDFDir [optional-base-dir]`
+
+`:FountainExportPDFDir` reproduces the source file's path relative to the
+cwd underneath `base_dir` (`pdf/` by default). For example, editing
+`screenplays/act1/scene2.fountain` from the project root and running
+`:FountainExportPDFDir` exports to `pdf/screenplays/act1/scene2.pdf`.
 
 ### Using a different export program
 
