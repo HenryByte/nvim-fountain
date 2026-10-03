@@ -234,6 +234,31 @@ require("nvim-fountain").setup({
 })
 ```
 
+### Different export commands per keymap
+
+Both `export_pdf(output_path, overrides)` and `export_pdf_dir(base_dir, overrides)`
+accept an optional `overrides` table (same shape as `export`) that is merged on
+top of your config for that call only. This lets you bind different export
+commands to different keys:
+
+```lua
+local export = require("nvim-fountain.export")
+
+vim.keymap.set("n", "<leader>fp", function()
+  export.export_pdf_dir() -- uses export.pdf.command from setup()
+end, { desc = "Export PDF (default command)" })
+
+vim.keymap.set("n", "<leader>fs", function()
+  export.export_pdf_dir(nil, {
+    pdf = {
+      command = function(current_file, output_path, options)
+        return { "screenplain", "--format", "pdf", current_file, output_path }
+      end,
+    },
+  })
+end, { desc = "Export PDF with screenplain" })
+```
+
 ## Example Files
 
 The plugin includes example files to help you get started:

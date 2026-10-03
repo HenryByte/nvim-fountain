@@ -26,10 +26,11 @@ local default_config = {
 	},
 }
 
--- Get export configuration
-local function get_config()
+-- Get export configuration, optionally with per-call overrides layered on top
+-- (same shape as config.export, e.g. { pdf = { command = ... } })
+local function get_config(overrides)
 	local config = require("nvim-fountain").config.export or {}
-	return vim.tbl_deep_extend("force", default_config, config)
+	return vim.tbl_deep_extend("force", default_config, config, overrides or {})
 end
 
 -- Save the buffer, run the configured export command, and report the result
@@ -57,8 +58,8 @@ local function run_export(config, current_file, output_path)
 end
 
 -- Export to PDF using afterwriting - direct system call approach
-function M.export_pdf(output_path)
-	local config = get_config()
+function M.export_pdf(output_path, overrides)
+	local config = get_config(overrides)
 	local current_file = vim.fn.expand("%:p")
 	local filename = vim.fn.fnamemodify(current_file, ":t:r") .. ".pdf"
 
@@ -77,8 +78,8 @@ end
 
 -- Export to PDF underneath base_dir, mirroring the source file's path
 -- relative to the cwd, e.g. dir1/dir2/file.fountain -> pdf/dir1/dir2/file.pdf
-function M.export_pdf_dir(base_dir)
-	local config = get_config()
+function M.export_pdf_dir(base_dir, overrides)
+	local config = get_config(overrides)
 	local current_file = vim.fn.expand("%:p")
 
 	if not base_dir or base_dir == "" then
